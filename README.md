@@ -28,7 +28,7 @@ The system helps car service centers manage vehicles, maintenance records, techn
 | Name | Role |
 |---|---|
 | Fatma | Team Lead — Data Models, RBAC, AI Agent |
-| [Habiba] | Frontend, Views, CRUD |
+| Habiba | Frontend, Views, CRUD |
 
 ## 🚀 Getting Started
 
