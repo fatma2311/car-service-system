@@ -1,0 +1,21 @@
+{% extends 'vehicles/base.html' %}
+
+{% block title %}Vehicles | Smart Car Service{% endblock %}
+
+{% block content %}
+    <h1>Registered Vehicles</h1>
+
+    {% if vehicles %}
+        <div class="card-grid">
+            {% for vehicle in vehicles %}
+                <div class="vehicle-card">
+                    <h3>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</h3>
+                    <span class="plate">{{ vehicle.license_plate }}</span>
+                    <p class="owner">Owner: {{ vehicle.owner.username }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">No vehicles registered yet.</div>
+    {% endif %}
+{% endblock %}
