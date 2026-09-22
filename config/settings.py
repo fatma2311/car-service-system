@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'vehicles',
+    'ai_agent',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,14 @@
+{% extends 'vehicles/base.html' %}
+
+{% block title %}AI Assistant | Smart Car Service{% endblock %}
+
+{% block content %}
+    <h1>💬 Ask our AI Assistant</h1>
+    <div class="vehicle-card" style="max-width: 600px;">
+        <div id="chat-box" style="height: 300px; overflow-y: auto; margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px;"></div>
+        <div style="display: flex; gap: 8px;">
+            <input type="text" id="chat-input" placeholder="I'm Here to Help You" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+{% endblock %}
