@@ -92,3 +92,22 @@ h1 {
     color: #888;
     padding: 40px;
 }
+
+
+header nav {
+    display: flex;
+    gap: 20px;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    opacity: 0.85;
+    transition: opacity 0.15s ease;
+}
+
+header nav a:hover {
+    opacity: 1;
+    color: var(--brand-orange);
+}

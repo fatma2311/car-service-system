@@ -1,0 +1,23 @@
+{% extends 'vehicles/base.html' %}
+
+{% block title %}Maintenance Records | Smart Car Service{% endblock %}
+
+{% block content %}
+    <h1>Maintenance Records</h1>
+
+    {% if records %}
+        <div class="card-grid">
+            {% for record in records %}
+                <div class="vehicle-card">
+                    <h3>{{ record.vehicle }}</h3>
+                    <span class="plate">{{ record.status }}</span>
+                    <p class="owner">{{ record.description }}</p>
+                    <p class="owner">Technician: {{ record.technician.user.username }}</p>
+                    <p class="owner">Date: {{ record.service_date }} — Cost: {{ record.cost }} EGP</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">No maintenance records yet.</div>
+    {% endif %}
+{% endblock %}

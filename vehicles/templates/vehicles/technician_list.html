@@ -1,0 +1,23 @@
+{% extends 'vehicles/base.html' %}
+
+{% block title %}Technicians | Smart Car Service{% endblock %}
+
+{% block content %}
+    <h1>Our Technicians</h1>
+
+    {% if technicians %}
+        <div class="card-grid">
+            {% for tech in technicians %}
+                <div class="vehicle-card">
+                    <h3>{{ tech.user.username }}</h3>
+                    <span class="plate">{{ tech.specialty }}</span>
+                    <p class="owner">
+                        {% if tech.is_available %}✅ Available{% else %}❌ Busy{% endif %}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">No technicians registered yet.</div>
+    {% endif %}
+{% endblock %}

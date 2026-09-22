@@ -10,6 +10,12 @@
 <body>
     <header>
         <div class="logo">🚗 Smart<span>Car</span>Service</div>
+                <nav>
+            <a href="{% url 'vehicle_list' %}">Vehicles</a>
+            <a href="{% url 'technician_list' %}">Technicians</a>
+            <a href="{% url 'maintenance_list' %}">Maintenance</a>
+            <a href="{% url 'appointment_list' %}">Appointments</a>
+        </nav>
     </header>
     <main>
         {% block content %}{% endblock %}

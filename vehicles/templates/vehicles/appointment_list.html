@@ -1,0 +1,23 @@
+{% extends 'vehicles/base.html' %}
+
+{% block title %}Appointments | Smart Car Service{% endblock %}
+
+{% block content %}
+    <h1>Upcoming Appointments</h1>
+
+    {% if appointments %}
+        <div class="card-grid">
+            {% for appt in appointments %}
+                <div class="vehicle-card">
+                    <h3>{{ appt.vehicle }}</h3>
+                    <span class="plate">{{ appt.status }}</span>
+                    <p class="owner">Technician: {{ appt.technician.user.username }}</p>
+                    <p class="owner">When: {{ appt.scheduled_date }}</p>
+                    {% if appt.notes %}<p class="owner">Notes: {{ appt.notes }}</p>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">No appointments scheduled.</div>
+    {% endif %}
+{% endblock %}
