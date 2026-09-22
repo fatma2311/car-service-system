@@ -1,0 +1,12 @@
+{% extends 'vehicles/base.html' %}
+
+{% block title %}Login | Smart Car Service{% endblock %}
+
+{% block content %}
+    <h1>Login</h1>
+    <form method="post" class="vehicle-card" style="max-width: 400px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+{% endblock %}

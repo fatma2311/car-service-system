@@ -111,3 +111,51 @@ header nav a:hover {
     opacity: 1;
     color: var(--brand-orange);
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+}
+
+form p {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+form label {
+    font-size: 14px;
+    color: #444;
+    font-weight: 600;
+}
+
+form input {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+}
+
+form input:focus {
+    outline: none;
+    border-color: var(--brand-orange);
+}
+
+form button {
+    background: var(--brand-orange);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+form button:hover {
+    opacity: 0.9;
+}
