@@ -15,6 +15,7 @@
     <a href="{% url 'technician_list' %}">Technicians</a>
     <a href="{% url 'maintenance_list' %}">Maintenance</a>
     <a href="{% url 'appointment_list' %}">Appointments</a>
+    <a href="{% url 'chat_page' %}">💬 Assistant</a>
     {% if user.is_authenticated %}
         <span style="opacity:0.7; margin-left:10px;">👤 {{ user.username }}</span>
         <form action="{% url 'logout' %}" method="post" style="display:inline;">
