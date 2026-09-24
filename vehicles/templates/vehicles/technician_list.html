@@ -1,23 +1,133 @@
+
 {% extends 'vehicles/base.html' %}
 
-{% block title %}Technicians | Smart Car Service{% endblock %}
+{% block title %}
+Technicians | Smart Car Service
+{% endblock %}
 
 {% block content %}
-    <h1>Our Technicians</h1>
+
+<div class="dashboard-page">
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="page-kicker">
+                SMART GARAGE
+            </span>
+
+            <h1>
+                Our Technicians
+            </h1>
+
+            <p>
+                View the technicians and their current availability.
+            </p>
+
+        </div>
+
+        <div class="page-icon">
+            👨‍🔧
+        </div>
+
+    </div>
+
 
     {% if technicians %}
-        <div class="card-grid">
+
+        <div class="dashboard-grid">
+
             {% for tech in technicians %}
-                <div class="vehicle-card">
-                    <h3>{{ tech.user.username }}</h3>
-                    <span class="plate">{{ tech.specialty }}</span>
-                    <p class="owner">
-                        {% if tech.is_available %}✅ Available{% else %}❌ Busy{% endif %}
+
+                <div class="dashboard-card">
+
+                    <div class="card-top">
+
+                        <div class="card-icon">
+                            👨‍🔧
+                        </div>
+
+
+                        {% if tech.is_available %}
+
+                            <span class="status-badge available">
+                                AVAILABLE
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-badge busy">
+                                BUSY
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <h3>
+                        {{ tech.user.username }}
+                    </h3>
+
+
+                    <p class="vehicle-year">
+                        {{ tech.specialty }}
                     </p>
+
+
+                    <div class="card-divider"></div>
+
+
+                    <div class="technician-status">
+
+                        {% if tech.is_available %}
+
+                            <span class="status-dot available-dot"></span>
+
+                            <span>
+                                Ready for appointments
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-dot busy-dot"></span>
+
+                            <span>
+                                Currently busy
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
                 </div>
+
             {% endfor %}
+
         </div>
+
     {% else %}
-        <div class="empty-state">No technicians registered yet.</div>
+
+        <div class="empty-dashboard">
+
+            <div class="empty-icon">
+                👨‍🔧
+            </div>
+
+            <h2>
+                No Technicians Yet
+            </h2>
+
+            <p>
+                No technicians are currently registered.
+            </p>
+
+        </div>
+
     {% endif %}
+
+</div>
+
 {% endblock %}
+
