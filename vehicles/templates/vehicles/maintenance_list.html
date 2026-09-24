@@ -1,23 +1,139 @@
+
 {% extends 'vehicles/base.html' %}
 
-{% block title %}Maintenance Records | Smart Car Service{% endblock %}
+{% block title %}
+Maintenance Records | Smart Car Service
+{% endblock %}
 
 {% block content %}
-    <h1>Maintenance Records</h1>
+
+<div class="dashboard-page">
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="page-kicker">
+                SERVICE CENTER
+            </span>
+
+            <h1>
+                Maintenance Records
+            </h1>
+
+            <p>
+                Track every service performed on your vehicles.
+            </p>
+
+        </div>
+
+        <div class="page-icon">
+            🔧
+        </div>
+
+    </div>
+
 
     {% if records %}
-        <div class="card-grid">
+
+        <div class="dashboard-grid">
+
             {% for record in records %}
-                <div class="vehicle-card">
-                    <h3>{{ record.vehicle }}</h3>
-                    <span class="plate">{{ record.status }}</span>
-                    <p class="owner">{{ record.description }}</p>
-                    <p class="owner">Technician: {{ record.technician.user.username }}</p>
-                    <p class="owner">Date: {{ record.service_date }} — Cost: {{ record.cost }} EGP</p>
+
+                <div class="dashboard-card">
+
+                    <div class="card-top">
+
+                        <div class="card-icon">
+                            🔧
+                        </div>
+
+
+                        <span class="status-badge">
+                            {{ record.status }}
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        {{ record.vehicle }}
+                    </h3>
+
+
+                    <p class="vehicle-year">
+                        {{ record.description }}
+                    </p>
+
+
+                    <div class="card-divider"></div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Technician
+                        </span>
+
+                        <strong>
+                            {{ record.technician.user.username }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Service Date
+                        </span>
+
+                        <strong>
+                            {{ record.service_date }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Cost
+                        </span>
+
+                        <strong class="cost">
+                            {{ record.cost }} EGP
+                        </strong>
+
+                    </div>
+
                 </div>
+
             {% endfor %}
+
         </div>
+
     {% else %}
-        <div class="empty-state">No maintenance records yet.</div>
+
+        <div class="empty-dashboard">
+
+            <div class="empty-icon">
+                🔧
+            </div>
+
+            <h2>
+                No Maintenance Records
+            </h2>
+
+            <p>
+                No maintenance services have been recorded yet.
+            </p>
+
+        </div>
+
     {% endif %}
+
+</div>
+
 {% endblock %}
+

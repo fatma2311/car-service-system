@@ -1,33 +1,131 @@
+
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Smart Car Service{% endblock %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'vehicles/css/style.css' %}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}Smart Car Service{% endblock %}
+    </title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'vehicles/css/style.css' %}"
+    >
 </head>
+
 <body>
+
     <header>
-        <div class="logo">🚗 Smart<span>Car</span>Service</div>
-            <nav>
-    <a href="{% url 'vehicle_list' %}">Vehicles</a>
-    <a href="{% url 'technician_list' %}">Technicians</a>
-    <a href="{% url 'maintenance_list' %}">Maintenance</a>
-    <a href="{% url 'appointment_list' %}">Appointments</a>
-    <a href="{% url 'chat_page' %}">💬 Assistant</a>
-    {% if user.is_authenticated %}
-        <span style="opacity:0.7; margin-left:10px;">👤 {{ user.username }}</span>
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" style="background:none; border:none; color:white; opacity:0.85; cursor:pointer; font-family:'Poppins',sans-serif; font-size:14px; padding:0;">Logout</button>
-        </form>
-    {% endif %}
-</nav>
+
+<!-- LOGO -->
+<a href="{% url 'home' %}" class="logo">
+    🚗 Smart<span>Car</span>Service
+</a>
+
+
+        <!-- NAVIGATION -->
+
+        <nav>
+<!-- Landing Page -->
+<a href="{% url 'home' %}" class="nav-link home-link">
+    Home
+</a>
+
+
+            <!-- Vehicles -->
+
+            <a href="{% url 'vehicle_list' %}" class="nav-link">
+                Vehicles
+            </a>
+
+
+            <!-- Technicians -->
+
+            <a href="{% url 'technician_list' %}" class="nav-link">
+                Technicians
+            </a>
+
+
+            <!-- Maintenance -->
+
+            <a href="{% url 'maintenance_list' %}" class="nav-link">
+                Maintenance
+            </a>
+
+
+            <!-- Appointments -->
+
+            <a href="{% url 'appointment_list' %}" class="nav-link">
+                Appointments
+            </a>
+
+
+            <!-- AI Assistant -->
+
+            <a href="{% url 'chat_page' %}" class="nav-link assistant-link">
+                💬 Assistant
+            </a>
+
+
+            <!-- SUPER ADMIN -->
+
+            <a href="{% url 'admin:index' %}" class="admin-link">
+                ⚙ Admin
+            </a>
+
+
+            {% if user.is_authenticated %}
+
+                <span class="user-name">
+                    👤 {{ user.username }}
+                </span>
+
+
+                <form
+                    action="{% url 'logout' %}"
+                    method="post"
+                    class="logout-form"
+                >
+
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        Logout
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+        </nav>
+
     </header>
-    <main>
-        {% block content %}{% endblock %}
+
+
+    <!-- PAGE CONTENT -->
+
+    <main class="{% block main_class %}{% endblock %}">
+
+        {% block content %}
+        {% endblock %}
+
     </main>
+
+
     <script src="{% static 'vehicles/js/main.js' %}"></script>
+
 </body>
+
 </html>
+

@@ -1,0 +1,273 @@
+
+{% extends 'vehicles/base.html' %}
+{% load static %}
+
+{% block title %}
+Smart Car Service
+{% endblock %}
+
+{% block main_class %}
+home-main
+{% endblock %}
+
+{% block content %}
+
+<div class="home-page">
+
+    <!-- HERO -->
+
+    <section class="hero-showcase">
+
+        <img
+            src="{% static 'vehicles/images/hero-car.jpg' %}"
+            class="hero-car-bg"
+            alt="Smart Car Service"
+        >
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <span class="hero-tag">
+                AI-POWERED CAR CARE
+            </span>
+
+            <h1 class="hero-title">
+                Every Service.<br>
+                One Smart Platform.
+            </h1>
+
+            <p class="hero-sub">
+                From oil changes to spare parts — track it all,
+                and let our AI assistant handle the booking.
+            </p>
+
+            <a href="{% url 'vehicle_list' %}" class="hero-btn">
+                Step Inside →
+            </a>
+
+        </div>
+
+        <div class="floating-icon icon-1">
+            🔧
+        </div>
+
+        <div class="floating-icon icon-2">
+            ⚙️
+        </div>
+
+        <div class="floating-icon icon-3">
+            🔩
+        </div>
+
+    </section>
+
+
+    <!-- FEATURES -->
+
+    <section class="feature-grid reveal">
+
+        <div class="feature-item">
+
+            <div class="feature-icon">
+                🔧
+            </div>
+
+            <h3>
+                Maintenance History
+            </h3>
+
+            <p>
+                Every service, logged and tracked automatically.
+            </p>
+
+        </div>
+
+
+        <div class="feature-item">
+
+            <div class="feature-icon">
+                📅
+            </div>
+
+            <h3>
+                Smart Booking
+            </h3>
+
+            <p>
+                Book the right technician at the right time.
+            </p>
+
+        </div>
+
+
+        <div class="feature-item">
+
+            <div class="feature-icon">
+                🔩
+            </div>
+
+            <h3>
+                Genuine Spare Parts
+            </h3>
+
+            <p>
+                Track parts used in every repair,
+                guaranteed authentic.
+            </p>
+
+        </div>
+
+
+        <div class="feature-item">
+
+            <div class="feature-icon">
+                💬
+            </div>
+
+            <h3>
+                AI Assistant
+            </h3>
+
+            <p>
+                Ask, book, or cancel — just by chatting.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- HOW IT WORKS -->
+
+    <section class="steps-section reveal">
+
+        <h2 class="section-title">
+            How It Works
+        </h2>
+
+        <div class="steps-grid">
+
+            <div class="step-item">
+
+                <div class="step-num">
+                    1
+                </div>
+
+                <h3>
+                    Register Your Car
+                </h3>
+
+                <p>
+                    Add your vehicle's details in seconds.
+                </p>
+
+            </div>
+
+
+            <div class="step-item">
+
+                <div class="step-num">
+                    2
+                </div>
+
+                <h3>
+                    Ask the AI Assistant
+                </h3>
+
+                <p>
+                    Tell it what your car needs,
+                    in plain language.
+                </p>
+
+            </div>
+
+
+            <div class="step-item">
+
+                <div class="step-num">
+                    3
+                </div>
+
+                <h3>
+                    Get Matched
+                </h3>
+
+                <p>
+                    The right technician,
+                    automatically assigned.
+                </p>
+
+            </div>
+
+
+            <div class="step-item">
+
+                <div class="step-num">
+                    4
+                </div>
+
+                <h3>
+                    Track & Confirm
+                </h3>
+
+                <p>
+                    Watch your appointment status
+                    update live.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- STATS -->
+
+    <section class="stats-section reveal">
+
+        <div class="stat-item">
+
+            <div class="stat-num">
+                500+
+            </div>
+
+            <div class="stat-label">
+                Cars Serviced
+            </div>
+
+        </div>
+
+
+        <div class="stat-item">
+
+            <div class="stat-num">
+                20+
+            </div>
+
+            <div class="stat-label">
+                Certified Technicians
+            </div>
+
+        </div>
+
+
+        <div class="stat-item">
+
+            <div class="stat-num">
+                98%
+            </div>
+
+            <div class="stat-label">
+                Customer Satisfaction
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+

@@ -1,21 +1,119 @@
+
 {% extends 'vehicles/base.html' %}
 
-{% block title %}Vehicles | Smart Car Service{% endblock %}
+{% block title %}
+Vehicles | Smart Car Service
+{% endblock %}
 
 {% block content %}
-    <h1>Registered Vehicles</h1>
+
+<div class="dashboard-page">
+
+    <div class="page-header">
+        <div>
+            <span class="page-kicker">SMART GARAGE</span>
+
+            <h1>
+                Registered Vehicles
+            </h1>
+
+            <p>
+                Manage and monitor all vehicles registered in the system.
+            </p>
+        </div>
+
+        <div class="page-icon">
+            🚗
+        </div>
+    </div>
+
 
     {% if vehicles %}
-        <div class="card-grid">
+
+        <div class="dashboard-grid">
+
             {% for vehicle in vehicles %}
-                <div class="vehicle-card">
-                    <h3>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</h3>
-                    <span class="plate">{{ vehicle.license_plate }}</span>
-                    <p class="owner">Owner: {{ vehicle.owner.username }}</p>
+
+                <div class="dashboard-card">
+
+                    <div class="card-top">
+
+                        <div class="card-icon">
+                            🚗
+                        </div>
+
+                        <span class="status-badge">
+                            REGISTERED
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        {{ vehicle.make }} {{ vehicle.model }}
+                    </h3>
+
+
+                    <p class="vehicle-year">
+                        {{ vehicle.year }}
+                    </p>
+
+
+                    <div class="card-divider"></div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            License Plate
+                        </span>
+
+                        <strong class="plate">
+                            {{ vehicle.license_plate }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Owner
+                        </span>
+
+                        <strong>
+                            {{ vehicle.owner.username }}
+                        </strong>
+
+                    </div>
+
                 </div>
+
             {% endfor %}
+
         </div>
+
     {% else %}
-        <div class="empty-state">No vehicles registered yet.</div>
+
+        <div class="empty-dashboard">
+
+            <div class="empty-icon">
+                🚗
+            </div>
+
+            <h2>
+                No Vehicles Yet
+            </h2>
+
+            <p>
+                No vehicles have been registered in the system.
+            </p>
+
+        </div>
+
     {% endif %}
+
+</div>
+
 {% endblock %}
+

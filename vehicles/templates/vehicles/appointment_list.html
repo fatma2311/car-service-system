@@ -1,23 +1,143 @@
+
 {% extends 'vehicles/base.html' %}
 
-{% block title %}Appointments | Smart Car Service{% endblock %}
+{% block title %}
+Appointments | Smart Car Service
+{% endblock %}
 
 {% block content %}
-    <h1>Upcoming Appointments</h1>
+
+<div class="dashboard-page">
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="page-kicker">
+                SMART SCHEDULING
+            </span>
+
+            <h1>
+                Upcoming Appointments
+            </h1>
+
+            <p>
+                Keep track of scheduled vehicle services.
+            </p>
+
+        </div>
+
+        <div class="page-icon">
+            📅
+        </div>
+
+    </div>
+
 
     {% if appointments %}
-        <div class="card-grid">
+
+        <div class="dashboard-grid">
+
             {% for appt in appointments %}
-                <div class="vehicle-card">
-                    <h3>{{ appt.vehicle }}</h3>
-                    <span class="plate">{{ appt.status }}</span>
-                    <p class="owner">Technician: {{ appt.technician.user.username }}</p>
-                    <p class="owner">When: {{ appt.scheduled_date }}</p>
-                    {% if appt.notes %}<p class="owner">Notes: {{ appt.notes }}</p>{% endif %}
+
+                <div class="dashboard-card">
+
+                    <div class="card-top">
+
+                        <div class="card-icon">
+                            📅
+                        </div>
+
+
+                        <span class="status-badge">
+                            {{ appt.status }}
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        {{ appt.vehicle }}
+                    </h3>
+
+
+                    <p class="vehicle-year">
+                        {{ appt.scheduled_date }}
+                    </p>
+
+
+                    <div class="card-divider"></div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Technician
+                        </span>
+
+                        <strong>
+                            {{ appt.technician.user.username }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Scheduled
+                        </span>
+
+                        <strong>
+                            {{ appt.scheduled_date }}
+                        </strong>
+
+                    </div>
+
+
+                    {% if appt.notes %}
+
+                        <div class="notes-box">
+
+                            <span>
+                                Notes
+                            </span>
+
+                            <p>
+                                {{ appt.notes }}
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
                 </div>
+
             {% endfor %}
+
         </div>
+
     {% else %}
-        <div class="empty-state">No appointments scheduled.</div>
+
+        <div class="empty-dashboard">
+
+            <div class="empty-icon">
+                📅
+            </div>
+
+            <h2>
+                No Upcoming Appointments
+            </h2>
+
+            <p>
+                There are currently no scheduled appointments.
+            </p>
+
+        </div>
+
     {% endif %}
+
+</div>
+
 {% endblock %}
+
