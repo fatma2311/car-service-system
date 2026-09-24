@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from google import genai
 from google.genai import types
-from .tools import get_maintenance_history, get_available_technicians, make_book_appointment_tool
+from .tools import get_maintenance_history, get_available_technicians, make_book_appointment_tool, make_cancel_appointment_tool
 
 client = genai.Client(api_key=config('GEMINI_API_KEY'))
 
@@ -38,12 +38,12 @@ def chat_message(request):
     history.append({'role': 'user', 'parts': [{'text': user_message}]})
 
     book_appointment = make_book_appointment_tool(request.user)
-
+    cancel_appointment = make_cancel_appointment_tool(request.user)
     response = client.models.generate_content(
         model='gemini-3.5-flash-lite',
         contents=history,
         config=types.GenerateContentConfig(
-            tools=[get_maintenance_history, get_available_technicians, book_appointment],
+            tools=[get_maintenance_history, get_available_technicians, book_appointment, cancel_appointment],
             system_instruction=system_instruction,
         ),
     )

@@ -76,3 +76,43 @@ def make_book_appointment_tool(user):
         )
 
     return book_appointment
+
+
+def make_cancel_appointment_tool(user):
+    """Creates a cancellation tool that knows which user is making the request."""
+
+    def cancel_appointment(license_plate: str, scheduled_date: str) -> str:
+        """Cancel an existing pending appointment for a vehicle.
+
+        Args:
+            license_plate: The vehicle's license plate, e.g. ABC-1234.
+            scheduled_date: The date and time of the appointment to cancel, format YYYY-MM-DD HH:MM.
+        """
+        try:
+            vehicle = Vehicle.objects.get(license_plate__iexact=license_plate)
+        except Vehicle.DoesNotExist:
+            return f"No vehicle found with license plate {license_plate}."
+
+        if user.role == user.Role.CUSTOMER and vehicle.owner_id != user.id:
+            return "You are not authorized to cancel appointments for this vehicle."
+
+        dt = parse_datetime(scheduled_date)
+        if dt is None:
+            return "Could not understand that date/time. Please use the format YYYY-MM-DD HH:MM."
+        if timezone.is_naive(dt):
+            dt = timezone.make_aware(dt)
+
+        appointment = Appointment.objects.filter(
+            vehicle=vehicle,
+            scheduled_date=dt,
+            status=Appointment.Status.PENDING,
+        ).first()
+
+        if not appointment:
+            return "No matching pending appointment found for that date and time."
+
+        appointment.status = Appointment.Status.CANCELLED
+        appointment.save()
+        return f"Appointment for {vehicle} on {appointment.scheduled_date} has been cancelled."
+
+    return cancel_appointment
