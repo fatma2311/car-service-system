@@ -42,21 +42,38 @@ class MaintenanceRecord(models.Model):
         on_delete=models.CASCADE,
         related_name='maintenance_records'
     )
+
     technician = models.ForeignKey(
         Technician,
         on_delete=models.SET_NULL,
         null=True,
         related_name='maintenance_records'
     )
+
     description = models.TextField()
+
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
         default=Status.OPEN
     )
+
     service_date = models.DateField()
-    cost = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
+
+    next_service_date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    cost = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=0
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
 
     def __str__(self):
         return f"{self.vehicle} - {self.service_date} ({self.status})"

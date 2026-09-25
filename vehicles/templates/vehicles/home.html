@@ -1,5 +1,6 @@
 
 {% extends 'vehicles/base.html' %}
+
 {% load static %}
 
 {% block title %}
@@ -14,8 +15,9 @@ home-main
 
 <div class="home-page">
 
-    <!-- HERO -->
-
+    <!-- =========================
+         CINEMATIC HERO
+         ========================= -->
     <section class="hero-showcase">
 
         <img
@@ -28,49 +30,347 @@ home-main
 
         <div class="hero-content">
 
-            <span class="hero-tag">
-                AI-POWERED CAR CARE
-            </span>
+            <div class="hero-eyebrow">
+                SMART AUTOMOTIVE CARE
+            </div>
 
             <h1 class="hero-title">
-                Every Service.<br>
-                One Smart Platform.
+                Your Car.<br>
+                <span>Smarter Care.</span>
             </h1>
 
             <p class="hero-sub">
-                From oil changes to spare parts — track it all,
-                and let our AI assistant handle the booking.
+                Intelligent vehicle maintenance, seamless service booking,
+                and AI-powered assistance — all in one premium platform.
             </p>
 
-            <a href="{% url 'vehicle_list' %}" class="hero-btn">
-                Step Inside →
-            </a>
+            <div class="hero-actions">
+
+                <a
+                    href="{% url 'appointment_list' %}"
+                    class="hero-btn hero-btn-primary"
+                >
+                    Book a Service
+                    <span>↗</span>
+                </a>
+
+                <a
+                    href="{% url 'vehicle_list' %}"
+                    class="hero-btn hero-btn-secondary"
+                >
+                    Explore Your Car
+                    <span>→</span>
+                </a>
+
+            </div>
 
         </div>
 
-        <div class="floating-icon icon-1">
-            🔧
+        <!-- Hero Meta -->
+        <div class="hero-meta">
+
+            <div class="hero-meta-item">
+                <span class="meta-number">01</span>
+                <span class="meta-label">SMART SERVICE</span>
+            </div>
+
+            <div class="hero-meta-line"></div>
+
+            <div class="hero-meta-item">
+                <span class="meta-number">AI</span>
+                <span class="meta-label">ASSISTED CARE</span>
+            </div>
+
         </div>
 
-        <div class="floating-icon icon-2">
-            ⚙️
-        </div>
+        <!-- Scroll Indicator -->
+        <div class="hero-scroll">
 
-        <div class="floating-icon icon-3">
-            🔩
+            <span>SCROLL TO EXPLORE</span>
+
+            <div class="scroll-line">
+                <span></span>
+            </div>
+
         </div>
 
     </section>
 
 
-    <!-- FEATURES -->
+    <!-- =========================
+         USER DASHBOARD STATS
+         ========================= -->
+    {% if user.is_authenticated %}
 
+    <section class="dashboard-stats reveal">
+
+        <div class="dashboard-stat">
+
+            <span class="dashboard-stat-icon">🚗</span>
+
+            <div>
+                <span class="dashboard-stat-number">
+                    {{ vehicles_count }}
+                </span>
+
+                <span class="dashboard-stat-label">
+                    MY VEHICLES
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-stat">
+
+            <span class="dashboard-stat-icon">🔧</span>
+
+            <div>
+                <span class="dashboard-stat-number">
+                    {{ maintenance_count }}
+                </span>
+
+                <span class="dashboard-stat-label">
+                    MAINTENANCE RECORDS
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-stat">
+
+            <span class="dashboard-stat-icon">📅</span>
+
+            <div>
+                <span class="dashboard-stat-number">
+                    {{ appointments_count }}
+                </span>
+
+                <span class="dashboard-stat-label">
+                    APPOINTMENTS
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-stat">
+
+            <span class="dashboard-stat-icon">⚠️</span>
+
+            <div>
+                <span class="dashboard-stat-number">
+                    {{ due_services_count }}
+                </span>
+
+                <span class="dashboard-stat-label">
+                    DUE SERVICES
+                </span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         MY VEHICLES
+         ========================= -->
+    <section class="dashboard-vehicles reveal">
+
+        <div class="dashboard-section-heading">
+
+            <span class="section-kicker">
+                YOUR GARAGE
+            </span>
+
+            <h2 class="section-title">
+                My Vehicles
+            </h2>
+
+        </div>
+
+
+        <div class="dashboard-vehicles-grid">
+
+            {% for vehicle in user.vehicles.all %}
+
+            <div class="dashboard-vehicle-card">
+
+                <div class="vehicle-card-top">
+
+                    <span class="vehicle-number">
+                        0{{ forloop.counter }}
+                    </span>
+
+                    <span class="vehicle-year">
+                        {{ vehicle.year }}
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    {{ vehicle.make }} {{ vehicle.model }}
+                </h3>
+
+
+                <p class="vehicle-plate">
+                    {{ vehicle.license_plate }}
+                </p>
+
+
+                <a
+                    href="{% url 'vehicle_list' %}"
+                    class="vehicle-card-link"
+                >
+                    View Vehicle
+                    <span>→</span>
+                </a>
+
+            </div>
+
+
+            {% empty %}
+
+            <div class="dashboard-empty">
+
+                <h3>
+                    No vehicles yet
+                </h3>
+
+                <p>
+                    Add your vehicle to start managing its maintenance.
+                </p>
+
+                <a href="{% url 'vehicle_list' %}">
+                    Explore Vehicles →
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         UPCOMING APPOINTMENTS
+         ========================= -->
+    <section class="dashboard-appointments reveal">
+
+        <div class="dashboard-section-heading">
+
+            <span class="section-kicker">
+                YOUR SCHEDULE
+            </span>
+
+            <h2 class="section-title">
+                Upcoming Appointments
+            </h2>
+
+        </div>
+
+
+        <div class="dashboard-appointments-list">
+
+            {% for appointment in upcoming_appointments %}
+
+            <div class="dashboard-appointment-card">
+
+                <div class="appointment-date">
+
+                    <span class="appointment-day">
+                        {{ appointment.scheduled_date|date:"d" }}
+                    </span>
+
+                    <span class="appointment-month">
+                        {{ appointment.scheduled_date|date:"M" }}
+                    </span>
+
+                </div>
+
+
+                <div class="appointment-info">
+
+                    <h3>
+                        {{ appointment.vehicle.make }}
+                        {{ appointment.vehicle.model }}
+                    </h3>
+
+                    <p>
+                        {{ appointment.scheduled_date|date:"l, d M Y — h:i A" }}
+                    </p>
+
+                    {% if appointment.technician %}
+
+                    <span class="appointment-tech">
+                        Technician:
+                        {{ appointment.technician.user.username }}
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+<div class="appointment-status status-{{ appointment.status|lower }}">
+    {{ appointment.status }}
+</div>
+
+
+
+            </div>
+
+
+            {% empty %}
+
+            <div class="dashboard-empty">
+
+                <h3>
+                    No upcoming appointments
+                </h3>
+
+                <p>
+                    You don't have any scheduled services yet.
+                </p>
+
+                <a href="{% url 'appointment_list' %}">
+                    View Appointments →
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <div class="dashboard-view-all">
+
+            <a href="{% url 'appointment_list' %}">
+                View All Appointments →
+            </a>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =========================
+         FEATURES
+         ========================= -->
     <section class="feature-grid reveal">
 
         <div class="feature-item">
 
             <div class="feature-icon">
-                🔧
+                01
             </div>
 
             <h3>
@@ -78,7 +378,8 @@ home-main
             </h3>
 
             <p>
-                Every service, logged and tracked automatically.
+                Keep every service record organized and accessible
+                whenever you need it.
             </p>
 
         </div>
@@ -87,7 +388,7 @@ home-main
         <div class="feature-item">
 
             <div class="feature-icon">
-                📅
+                02
             </div>
 
             <h3>
@@ -95,7 +396,8 @@ home-main
             </h3>
 
             <p>
-                Book the right technician at the right time.
+                Find the right service and schedule your appointment
+                without unnecessary steps.
             </p>
 
         </div>
@@ -104,16 +406,16 @@ home-main
         <div class="feature-item">
 
             <div class="feature-icon">
-                🔩
+                03
             </div>
 
             <h3>
-                Genuine Spare Parts
+                Vehicle Care
             </h3>
 
             <p>
-                Track parts used in every repair,
-                guaranteed authentic.
+                Stay informed about your vehicle and its upcoming
+                maintenance needs.
             </p>
 
         </div>
@@ -122,7 +424,7 @@ home-main
         <div class="feature-item">
 
             <div class="feature-icon">
-                💬
+                04
             </div>
 
             <h3>
@@ -130,7 +432,8 @@ home-main
             </h3>
 
             <p>
-                Ask, book, or cancel — just by chatting.
+                Get intelligent assistance that understands your
+                vehicle and service context.
             </p>
 
         </div>
@@ -138,28 +441,40 @@ home-main
     </section>
 
 
-    <!-- HOW IT WORKS -->
-
+    <!-- =========================
+         HOW IT WORKS
+         ========================= -->
     <section class="steps-section reveal">
 
-        <h2 class="section-title">
-            How It Works
-        </h2>
+        <div class="section-heading">
+
+            <span class="section-kicker">
+                THE EXPERIENCE
+            </span>
+
+            <h2 class="section-title">
+                Car care, without<br>
+                the complexity.
+            </h2>
+
+        </div>
+
 
         <div class="steps-grid">
 
             <div class="step-item">
 
-                <div class="step-num">
-                    1
-                </div>
+                <span class="step-num">
+                    01
+                </span>
 
                 <h3>
                     Register Your Car
                 </h3>
 
                 <p>
-                    Add your vehicle's details in seconds.
+                    Add your vehicle and keep all its information
+                    in one place.
                 </p>
 
             </div>
@@ -167,17 +482,16 @@ home-main
 
             <div class="step-item">
 
-                <div class="step-num">
-                    2
-                </div>
+                <span class="step-num">
+                    02
+                </span>
 
                 <h3>
-                    Ask the AI Assistant
+                    Tell the AI
                 </h3>
 
                 <p>
-                    Tell it what your car needs,
-                    in plain language.
+                    Describe what your car needs using natural language.
                 </p>
 
             </div>
@@ -185,17 +499,17 @@ home-main
 
             <div class="step-item">
 
-                <div class="step-num">
-                    3
-                </div>
+                <span class="step-num">
+                    03
+                </span>
 
                 <h3>
                     Get Matched
                 </h3>
 
                 <p>
-                    The right technician,
-                    automatically assigned.
+                    Discover the appropriate service and available
+                    appointment options.
                 </p>
 
             </div>
@@ -203,17 +517,17 @@ home-main
 
             <div class="step-item">
 
-                <div class="step-num">
-                    4
-                </div>
+                <span class="step-num">
+                    04
+                </span>
 
                 <h3>
-                    Track & Confirm
+                    Stay in Control
                 </h3>
 
                 <p>
-                    Watch your appointment status
-                    update live.
+                    Track appointments, maintenance and vehicle history
+                    from one platform.
                 </p>
 
             </div>
@@ -223,18 +537,19 @@ home-main
     </section>
 
 
-    <!-- STATS -->
-
+    <!-- =========================
+         STATS
+         ========================= -->
     <section class="stats-section reveal">
 
         <div class="stat-item">
 
             <div class="stat-num">
-                500+
+                01
             </div>
 
             <div class="stat-label">
-                Cars Serviced
+                SMART PLATFORM
             </div>
 
         </div>
@@ -243,11 +558,11 @@ home-main
         <div class="stat-item">
 
             <div class="stat-num">
-                20+
+                AI
             </div>
 
             <div class="stat-label">
-                Certified Technicians
+                CONTEXT-AWARE ASSISTANCE
             </div>
 
         </div>
@@ -256,11 +571,11 @@ home-main
         <div class="stat-item">
 
             <div class="stat-num">
-                98%
+                24/7
             </div>
 
             <div class="stat-label">
-                Customer Satisfaction
+                DIGITAL ACCESS
             </div>
 
         </div>
