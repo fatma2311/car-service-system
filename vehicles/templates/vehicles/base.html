@@ -1,131 +1,135 @@
-
 {% load static %}
 
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>
-        {% block title %}Smart Car Service{% endblock %}
-    </title>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+<title>
+    {% block title %}Smart Car Service{% endblock %}
+</title>
 
-    <link
-        rel="stylesheet"
-        href="{% static 'vehicles/css/style.css' %}"
-    >
+<link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+>
+
+<link
+    rel="stylesheet"
+    href="{% static 'vehicles/css/style.css' %}"
+>
+
+
 </head>
 
 <body>
 
-    <header>
 
-<!-- LOGO -->
-<a href="{% url 'home' %}" class="logo">
-    🚗 Smart<span>Car</span>Service
-</a>
+<header>
 
+    <!-- LOGO -->
+    <a href="{% url 'home' %}" class="logo">
+        🚗 Smart<span>Car</span>Service
+    </a>
 
-        <!-- NAVIGATION -->
+    <!-- NAVIGATION -->
+    <nav>
 
-        <nav>
-<!-- Landing Page -->
-<a href="{% url 'home' %}" class="nav-link home-link">
-    Home
-</a>
+        <!-- Landing Page -->
+        <a href="{% url 'home' %}" class="nav-link home-link">
+            Home
+        </a>
 
+        <!-- Vehicles -->
+        <a href="{% url 'vehicle_list' %}" class="nav-link">
+            Vehicles
+        </a>
 
-            <!-- Vehicles -->
+        <!-- Technicians -->
+        {% if user.is_authenticated %}
+            {% if user.role == user.Role.ADMIN or user.role == user.Role.MANAGER %}
+                <a href="{% url 'technician_list' %}" class="nav-link">
+                    Technicians
+                </a>
+            {% endif %}
+        {% endif %}
 
-            <a href="{% url 'vehicle_list' %}" class="nav-link">
-                Vehicles
-            </a>
+        <!-- Maintenance -->
+        <a href="{% url 'maintenance_list' %}" class="nav-link">
+            Maintenance
+        </a>
 
+        <!-- Due Services -->
+        <a href="{% url 'due_services' %}" class="nav-link">
+            Due Services
+        </a>
 
-            <!-- Technicians -->
+        <!-- Appointments -->
+        <a href="{% url 'appointment_list' %}" class="nav-link">
+            Appointments
+        </a>
 
-            <a href="{% url 'technician_list' %}" class="nav-link">
-                Technicians
-            </a>
+        <!-- AI Assistant -->
+        <a href="{% url 'chat_page' %}" class="nav-link assistant-link">
+            💬 Assistant
+        </a>
 
-
-            <!-- Maintenance -->
-
-            <a href="{% url 'maintenance_list' %}" class="nav-link">
-                Maintenance
-            </a>
-
-
-            <!-- Appointments -->
-
-            <a href="{% url 'appointment_list' %}" class="nav-link">
-                Appointments
-            </a>
-
-
-            <!-- AI Assistant -->
-
-            <a href="{% url 'chat_page' %}" class="nav-link assistant-link">
-                💬 Assistant
-            </a>
-
-
-            <!-- SUPER ADMIN -->
-
-            <a href="{% url 'admin:index' %}" class="admin-link">
+        <!-- SUPER ADMIN -->
+        {% if user.is_authenticated and user.role == user.Role.ADMIN %}
+            <a href="{% url 'admin:index' %}" class="nav-link">
                 ⚙ Admin
             </a>
+        {% endif %}
 
+        {% if user.is_authenticated %}
 
-            {% if user.is_authenticated %}
+            <!-- Logged-in User -->
+            <span class="user-name">
+                👤 {{ user.username }}
+            </span>
 
-                <span class="user-name">
-                    👤 {{ user.username }}
-                </span>
+            <!-- Logout -->
+            <form
+                action="{% url 'logout' %}"
+                method="post"
+                class="logout-form"
+            >
+                {% csrf_token %}
 
+                <button type="submit">
+                    Logout
+                </button>
+            </form>
 
-                <form
-                    action="{% url 'logout' %}"
-                    method="post"
-                    class="logout-form"
-                >
+        {% else %}
 
-                    {% csrf_token %}
+            <!-- Login -->
+            <a href="{% url 'login' %}" class="nav-link">
+                Login
+            </a>
 
-                    <button type="submit">
-                        Logout
-                    </button>
+            <!-- Register -->
+            <a href="{% url 'register' %}" class="nav-link">
+                Register
+            </a>
 
-                </form>
+        {% endif %}
 
-            {% endif %}
+    </nav>
+</header>
 
-        </nav>
+<!-- PAGE CONTENT -->
+<main class="{% block main_class %}{% endblock %}">
+    {% block content %}
+    {% endblock %}
+</main>
 
-    </header>
+<script src="{% static 'vehicles/js/main.js' %}"></script>
 
-
-    <!-- PAGE CONTENT -->
-
-    <main class="{% block main_class %}{% endblock %}">
-
-        {% block content %}
-        {% endblock %}
-
-    </main>
-
-
-    <script src="{% static 'vehicles/js/main.js' %}"></script>
 
 </body>
-
 </html>
-

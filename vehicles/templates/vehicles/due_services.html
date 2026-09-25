@@ -1,0 +1,68 @@
+
+{% extends 'vehicles/base.html' %}
+
+{% block title %}Due Services | Smart Car Service{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Due Services</h1>
+    <p>Vehicles that need maintenance.</p>
+</div>
+
+<div class="vehicles-grid">
+
+    {% if due_services %}
+
+        {% for item in due_services %}
+
+            <div class="vehicle-card">
+
+                <h2>
+                    {{ item.vehicle.make }}
+                    {{ item.vehicle.model }}
+                </h2>
+
+                <p>
+                    <strong>Year:</strong>
+                    {{ item.vehicle.year }}
+                </p>
+
+                <p>
+                    <strong>License Plate:</strong>
+                    {{ item.vehicle.license_plate }}
+                </p>
+
+                <p>
+                    <strong>Last Service:</strong>
+                    {{ item.record.service_date }}
+                </p>
+
+                <p>
+                    <strong>Next Service:</strong>
+                    {{ item.record.next_service_date }}
+                </p>
+
+                <div class="status-badge">
+                    {{ item.status }}
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="vehicle-card">
+            <h2>No Due Services</h2>
+            <p>
+                There are no vehicles that currently need maintenance.
+            </p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
