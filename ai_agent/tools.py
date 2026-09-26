@@ -3,16 +3,31 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
 
+
 def make_get_my_vehicles_tool(user):
-    """Get all vehicles owned by the current user."""
+    """Get vehicles accessible to the current user."""
 
     def get_my_vehicles() -> str:
-        """Get the vehicles that belong to the currently logged-in user."""
+        """Get vehicles based on the currently logged-in user's role."""
 
         if user.role == user.Role.CUSTOMER:
-            vehicles = Vehicle.objects.filter(owner=user)
-        else:
+            vehicles = Vehicle.objects.filter(
+                owner=user
+            )
+
+        elif user.role == user.Role.TECHNICIAN:
+            vehicles = Vehicle.objects.filter(
+                maintenance_records__technician__user=user
+            ).distinct()
+
+        elif user.role in [
+            user.Role.ADMIN,
+            user.Role.MANAGER,
+        ]:
             vehicles = Vehicle.objects.all()
+
+        else:
+            vehicles = Vehicle.objects.none()
 
         if not vehicles.exists():
             return "No vehicles found for this user."
@@ -29,11 +44,15 @@ def make_get_my_vehicles_tool(user):
     return get_my_vehicles
 
 
+
+
 def make_get_maintenance_history_tool(user):
+
     """Get maintenance history only for vehicles accessible to the current user."""
 
     def get_maintenance_history(license_plate: str) -> str:
-        """Get the full maintenance history for a specific vehicle."""
+
+        """Get the full maintenance history for a specific accessible vehicle."""
 
         try:
             vehicle = Vehicle.objects.get(
@@ -42,11 +61,35 @@ def make_get_maintenance_history_tool(user):
         except Vehicle.DoesNotExist:
             return f"No vehicle found with license plate {license_plate}."
 
-        if (
-            user.role == user.Role.CUSTOMER
-            and vehicle.owner_id != user.id
-        ):
-            return "You are not authorized to view maintenance history for this vehicle."
+        if user.role == user.Role.CUSTOMER:
+            if vehicle.owner_id != user.id:
+                return (
+                    "You are not authorized to view maintenance history "
+                    "for this vehicle."
+                )
+
+        elif user.role == user.Role.TECHNICIAN:
+            has_access = vehicle.maintenance_records.filter(
+                technician__user=user
+            ).exists()
+
+            if not has_access:
+                return (
+                    "You are not authorized to view maintenance history "
+                    "for this vehicle."
+                )
+
+        elif user.role in [
+            user.Role.ADMIN,
+            user.Role.MANAGER,
+        ]:
+            pass
+
+        else:
+            return (
+                "You are not authorized to view maintenance history "
+                "for this vehicle."
+            )
 
         records = vehicle.maintenance_records.all().order_by(
             "-service_date"
@@ -69,6 +112,8 @@ def make_get_maintenance_history_tool(user):
     return get_maintenance_history
 
 
+
+
 def get_available_technicians() -> str:
     """Get the list of technicians who are currently available."""
 
@@ -85,6 +130,7 @@ def get_available_technicians() -> str:
 
 
 def make_book_appointment_tool(user):
+
     def book_appointment(
         license_plate: str,
         scheduled_date: str,
@@ -100,8 +146,37 @@ def make_book_appointment_tool(user):
             return f"No vehicle found with license plate {license_plate}."
 
         # Permission check
-        if user.role == user.Role.CUSTOMER and vehicle.owner_id != user.id:
-            return "You are not authorized to book an appointment for this vehicle."
+        if user.role == user.Role.CUSTOMER:
+
+            if vehicle.owner_id != user.id:
+                return (
+                    "You are not authorized to book an appointment "
+                    "for this vehicle."
+                )
+
+        elif user.role == user.Role.TECHNICIAN:
+
+            has_access = vehicle.maintenance_records.filter(
+                technician__user=user
+            ).exists()
+
+            if not has_access:
+                return (
+                    "You are not authorized to book an appointment "
+                    "for this vehicle."
+                )
+
+        elif user.role in [
+            user.Role.ADMIN,
+            user.Role.MANAGER,
+        ]:
+            pass
+
+        else:
+            return (
+                "You are not authorized to book an appointment "
+                "for this vehicle."
+            )
 
         # Parse date and time
         dt = parse_datetime(scheduled_date)
@@ -136,7 +211,9 @@ def make_book_appointment_tool(user):
             return "You cannot book an appointment in the past."
 
         # Find an available technician
-        technicians = Technician.objects.filter(is_available=True)
+        technicians = Technician.objects.filter(
+            is_available=True
+        )
 
         if not technicians.exists():
             return "No technicians are currently available."
@@ -144,6 +221,7 @@ def make_book_appointment_tool(user):
         selected_technician = None
 
         for technician in technicians:
+
             already_booked = Appointment.objects.filter(
                 technician=technician,
                 scheduled_date=dt,
@@ -183,14 +261,21 @@ def make_book_appointment_tool(user):
 
 
 
+
+
+
+
 def make_cancel_appointment_tool(user):
+
     """Creates a cancellation tool that knows which user is making the request."""
 
     def cancel_appointment(
         license_plate: str,
-        scheduled_date: str
+        scheduled_date: str,
+        confirm: bool = False
     ) -> str:
-        """Cancel an existing pending appointment."""
+
+        """Cancel an existing pending appointment after explicit confirmation."""
 
         try:
             vehicle = Vehicle.objects.get(
@@ -199,15 +284,40 @@ def make_cancel_appointment_tool(user):
         except Vehicle.DoesNotExist:
             return f"No vehicle found with license plate {license_plate}."
 
-        if (
-            user.role == user.Role.CUSTOMER
-            and vehicle.owner_id != user.id
-        ):
+        # Permission check
+        if user.role == user.Role.CUSTOMER:
+
+            if vehicle.owner_id != user.id:
+                return (
+                    "You are not authorized to cancel appointments "
+                    "for this vehicle."
+                )
+
+        elif user.role == user.Role.TECHNICIAN:
+
+            has_access = vehicle.maintenance_records.filter(
+                technician__user=user
+            ).exists()
+
+            if not has_access:
+                return (
+                    "You are not authorized to cancel appointments "
+                    "for this vehicle."
+                )
+
+        elif user.role in [
+            user.Role.ADMIN,
+            user.Role.MANAGER,
+        ]:
+            pass
+
+        else:
             return (
                 "You are not authorized to cancel appointments "
                 "for this vehicle."
             )
 
+        # Parse date and time
         dt = parse_datetime(scheduled_date)
 
         if dt is None:
@@ -231,6 +341,15 @@ def make_cancel_appointment_tool(user):
                 "for that date and time."
             )
 
+        # Explicit confirmation required before cancellation
+        if not confirm:
+            return (
+                f"Please confirm that you want to cancel the appointment "
+                f"for {vehicle} on {appointment.scheduled_date}. "
+                f"No changes have been made yet."
+            )
+
+        # Cancel only after explicit confirmation
         appointment.status = Appointment.Status.CANCELLED
         appointment.save()
 
@@ -240,6 +359,10 @@ def make_cancel_appointment_tool(user):
         )
 
     return cancel_appointment
+
+
+
+
 
 
 
@@ -304,21 +427,34 @@ def get_available_service_slots() -> str:
 
 
 def make_get_due_services_tool(user):
+
     """Get vehicles that are due or overdue for maintenance."""
 
     def get_due_services() -> str:
 
         if user.role == user.Role.CUSTOMER:
-            vehicles = Vehicle.objects.filter(owner=user)
-        else:
+            vehicles = Vehicle.objects.filter(
+                owner=user
+            )
+
+        elif user.role == user.Role.TECHNICIAN:
+            vehicles = Vehicle.objects.filter(
+                maintenance_records__technician__user=user
+            ).distinct()
+
+        elif user.role in [
+            user.Role.ADMIN,
+            user.Role.MANAGER,
+        ]:
             vehicles = Vehicle.objects.all()
 
-        today = timezone.localdate()
+        else:
+            vehicles = Vehicle.objects.none()
 
+        today = timezone.localdate()
         due_services = []
 
         for vehicle in vehicles:
-
             last_record = vehicle.maintenance_records.order_by(
                 '-service_date'
             ).first()
@@ -329,7 +465,9 @@ def make_get_due_services_tool(user):
             if last_record.next_service_date < today:
                 status = 'Overdue'
 
-            elif last_record.next_service_date <= today + timezone.timedelta(days=7):
+            elif last_record.next_service_date <= (
+                today + timezone.timedelta(days=7)
+            ):
                 status = 'Due Soon'
 
             else:

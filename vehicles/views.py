@@ -11,14 +11,15 @@ from .models import (
 )
 
 
+
 @login_required
 def home(request):
-
     user = request.user
 
     if user.role == user.Role.CUSTOMER:
-
-        vehicles = Vehicle.objects.filter(owner=user)
+        vehicles = Vehicle.objects.filter(
+            owner=user
+        )
 
         maintenance_records = MaintenanceRecord.objects.filter(
             vehicle__owner=user
@@ -28,33 +29,39 @@ def home(request):
             vehicle__owner=user
         )
 
-    else:
+    elif user.role == user.Role.TECHNICIAN:
+        vehicles = Vehicle.objects.filter(
+            maintenance_records__technician__user=user
+        ).distinct()
 
+        maintenance_records = MaintenanceRecord.objects.filter(
+            technician__user=user
+        )
+
+        appointments = Appointment.objects.filter(
+            technician__user=user
+        )
+
+    elif user.role in [
+        user.Role.ADMIN,
+        user.Role.MANAGER,
+    ]:
         vehicles = Vehicle.objects.all()
 
         maintenance_records = MaintenanceRecord.objects.all()
 
         appointments = Appointment.objects.all()
 
-    # Total number of appointments
-    appointments_count = appointments.count()
-
-    # Get the next 3 appointments
-
-    upcoming_appointments = appointments.filter(
-    scheduled_date__gte=timezone.now()
-).exclude(
-    status=Appointment.Status.CANCELLED
-).order_by('scheduled_date')[:3]
-
-
+    else:
+        vehicles = Vehicle.objects.none()
+        maintenance_records = MaintenanceRecord.objects.none()
+        appointments = Appointment.objects.none()
 
     today = timezone.localdate()
 
     due_services_count = 0
 
     for vehicle in vehicles:
-
         last_record = vehicle.maintenance_records.order_by(
             '-service_date'
         ).first()
@@ -66,12 +73,23 @@ def home(request):
         ):
             due_services_count += 1
 
+    appointments_count = appointments.count()
+
+    upcoming_appointments = appointments.filter(
+        scheduled_date__gte=timezone.now(),
+        status__in=[
+            Appointment.Status.PENDING,
+            Appointment.Status.CONFIRMED,
+        ]
+    ).order_by('scheduled_date')[:3]
+
     context = {
-        'vehicles_count': vehicles.count(),
-        'maintenance_count': maintenance_records.count(),
-        'appointments_count': appointments_count,
-        'due_services_count': due_services_count,
-        'upcoming_appointments': upcoming_appointments,
+    'vehicles': vehicles,
+    'vehicles_count': vehicles.count(),
+    'maintenance_count': maintenance_records.count(),
+    'appointments_count': appointments_count,
+    'due_services_count': due_services_count,
+    'upcoming_appointments': upcoming_appointments,
     }
 
     return render(
@@ -79,6 +97,8 @@ def home(request):
         'vehicles/home.html',
         context
     )
+
+
 
 
 
