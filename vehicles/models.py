@@ -75,6 +75,23 @@ class MaintenanceRecord(models.Model):
         auto_now_add=True
     )
 
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(cost__gte=0),
+                name='maintenance_cost_non_negative',
+            ),
+            models.CheckConstraint(
+                condition=models.Q(
+                    status__in=[
+                        'OPEN',
+                        'IN_PROGRESS',
+                        'COMPLETED',
+                    ]
+                ),
+                name='maintenance_valid_status',
+            ),
+        ]
     def __str__(self):
         return f"{self.vehicle} - {self.service_date} ({self.status})"
 
@@ -103,6 +120,20 @@ class Appointment(models.Model):
         default=Status.PENDING
     )
     notes = models.TextField(blank=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(
+                    status__in=[
+                        'PENDING',
+                        'CONFIRMED',
+                        'CANCELLED',
+                    ]
+                ),
+                name='appointment_valid_status',
+            ),
+        ]
 
     def __str__(self):
         return f"{self.vehicle} @ {self.scheduled_date} ({self.status})"
