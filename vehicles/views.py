@@ -1,5 +1,5 @@
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
@@ -10,6 +10,7 @@ from .models import (
     Appointment,
 )
 
+from .forms import VehicleForm
 
 
 @login_required
@@ -84,12 +85,12 @@ def home(request):
     ).order_by('scheduled_date')[:3]
 
     context = {
-    'vehicles': vehicles,
-    'vehicles_count': vehicles.count(),
-    'maintenance_count': maintenance_records.count(),
-    'appointments_count': appointments_count,
-    'due_services_count': due_services_count,
-    'upcoming_appointments': upcoming_appointments,
+        'vehicles': vehicles,
+        'vehicles_count': vehicles.count(),
+        'maintenance_count': maintenance_records.count(),
+        'appointments_count': appointments_count,
+        'due_services_count': due_services_count,
+        'upcoming_appointments': upcoming_appointments,
     }
 
     return render(
@@ -99,7 +100,27 @@ def home(request):
     )
 
 
+@login_required
+def add_vehicle(request):
+    if request.user.role != request.user.Role.CUSTOMER:
+        return redirect('vehicle_list')
 
+    if request.method == 'POST':
+        form = VehicleForm(request.POST)
+
+        if form.is_valid():
+            vehicle = form.save(commit=False)
+            vehicle.owner = request.user
+            vehicle.save()
+            return redirect('vehicle_list')
+    else:
+        form = VehicleForm()
+
+    return render(
+        request,
+        'vehicles/add_vehicle.html',
+        {'form': form}
+    )
 
 
 @login_required
@@ -134,9 +155,6 @@ def vehicle_list(request):
     )
 
 
-
-
-
 @login_required
 def technician_list(request):
     if request.user.role not in [
@@ -156,27 +174,21 @@ def technician_list(request):
     )
 
 
-
-
 @login_required
 def maintenance_list(request):
-
     user = request.user
 
     if user.role == user.Role.CUSTOMER:
-
         records = MaintenanceRecord.objects.filter(
             vehicle__owner=user
         )
 
     elif user.role == user.Role.TECHNICIAN:
-
         records = MaintenanceRecord.objects.filter(
             technician__user=user
         )
 
     else:
-
         records = MaintenanceRecord.objects.all()
 
     records = records.order_by('-service_date')
@@ -188,7 +200,6 @@ def maintenance_list(request):
             'records': records
         }
     )
-
 
 
 @login_required
@@ -224,7 +235,37 @@ def appointment_list(request):
         }
     )
 
+@login_required
+def cancel_appointment(request, appointment_id):
+    if request.method != 'POST':
+        return redirect('appointment_list')
 
+    appointment = get_object_or_404(
+        Appointment,
+        id=appointment_id,
+    )
+
+    user = request.user
+
+    if user.role == user.Role.CUSTOMER:
+        if appointment.vehicle.owner != user:
+            return redirect('appointment_list')
+
+    elif user.role == user.Role.TECHNICIAN:
+        if not appointment.technician or appointment.technician.user != user:
+            return redirect('appointment_list')
+
+    elif user.role not in [
+        user.Role.ADMIN,
+        user.Role.MANAGER,
+    ]:
+        return redirect('appointment_list')
+
+    if appointment.status == Appointment.Status.PENDING:
+        appointment.status = Appointment.Status.CANCELLED
+        appointment.save(update_fields=['status'])
+
+    return redirect('appointment_list')
 
 
 @login_required
