@@ -1,0 +1,150 @@
+
+{% extends 'vehicles/base.html' %}
+
+{% block title %}
+Edit Vehicle | Smart Car Service
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="page-header">
+        <div>
+            <span class="page-kicker">SMART GARAGE</span>
+            <h1>Edit Your Vehicle</h1>
+            <p>Update your vehicle information.</p>
+        </div>
+
+        <div class="page-icon">🚗</div>
+    </div>
+
+    <div style="max-width: 650px; margin: 0 auto;">
+
+        <div class="dashboard-card">
+
+            <div style="padding: 10px 5px 5px;">
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+                    {% for field in form %}
+
+                        <div style="display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px;">
+
+                            <label style="color: #e088e3; font-size: 14px; font-weight: 600;">
+                                {{ field.label }}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.errors %}
+                                <div style="color: #dc3545; font-size: 13px;">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                    <div style="display: flex; gap: 12px; margin-top: 25px; flex-wrap: wrap;">
+
+                        <button type="submit">
+                            Save Changes
+                        </button>
+
+                        <a href="{% url 'vehicle_list' %}"
+                           style="display:inline-flex;align-items:center;justify-content:center;background:#1a2744;color:white;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+.dashboard-card form {
+    background: transparent;
+    box-shadow: none;
+    padding: 10px 5px;
+}
+
+.dashboard-card form label {
+    display: block;
+    color: #e088e3 !important;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.dashboard-card form p,
+.dashboard-card form div {
+    color: #1f2937;
+}
+
+.dashboard-card form input,
+.dashboard-card form select,
+.dashboard-card form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #d9dee5;
+    border-radius: 8px;
+    background: #fff !important;
+    color: #1f2937 !important;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+}
+
+.dashboard-card form input::placeholder,
+.dashboard-card form textarea::placeholder {
+    color: #6b7280;
+}
+
+.dashboard-card form input:focus,
+.dashboard-card form select:focus,
+.dashboard-card form textarea:focus {
+    outline: none;
+    border-color: var(--brand-orange);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, .12);
+}
+
+.dashboard-card form button {
+    background: var(--brand-orange) !important;
+    color: #fff !important;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.dashboard-card form button:hover {
+    transform: translateY(-1px);
+}
+
+.dashboard-card form ul.errorlist {
+    padding: 0;
+    margin: 4px 0 0;
+    list-style: none;
+    color: #dc3545 !important;
+    font-size: 13px;
+}
+
+</style>
+
+{% endblock %}
+

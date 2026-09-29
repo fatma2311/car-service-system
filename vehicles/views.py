@@ -10,7 +10,7 @@ from .models import (
     Appointment,
 )
 
-from .forms import VehicleForm
+from .forms import VehicleForm, MaintenanceRecordForm, AppointmentForm
 
 
 @login_required
@@ -122,6 +122,47 @@ def add_vehicle(request):
         {'form': form}
     )
 
+@login_required
+def edit_vehicle(request, vehicle_id):
+    vehicle = get_object_or_404(
+        Vehicle,
+        id=vehicle_id,
+        owner=request.user,
+    )
+
+    if request.user.role != request.user.Role.CUSTOMER:
+        return redirect('vehicle_list')
+
+    if request.method == 'POST':
+        form = VehicleForm(request.POST, instance=vehicle)
+
+        if form.is_valid():
+            form.save()
+            return redirect('vehicle_list')
+    else:
+        form = VehicleForm(instance=vehicle)
+
+    return render(
+        request,
+        'vehicles/edit_vehicle.html',
+        {'form': form, 'vehicle': vehicle}
+    )
+
+@login_required
+def delete_vehicle(request, vehicle_id):
+    if request.user.role != request.user.Role.CUSTOMER:
+        return redirect('vehicle_list')
+
+    vehicle = get_object_or_404(
+        Vehicle,
+        id=vehicle_id,
+        owner=request.user,
+    )
+
+    if request.method == 'POST':
+        vehicle.delete()
+
+    return redirect('vehicle_list')
 
 @login_required
 def vehicle_list(request):
@@ -201,6 +242,115 @@ def maintenance_list(request):
         }
     )
 
+@login_required
+def add_maintenance(request):
+    if request.user.role not in [
+        request.user.Role.ADMIN,
+        request.user.Role.MANAGER,
+        request.user.Role.TECHNICIAN,
+    ]:
+        return redirect('maintenance_list')
+
+    if request.method == 'POST':
+        form = MaintenanceRecordForm(request.POST)
+
+        if form.is_valid():
+            record = form.save(commit=False)
+
+            if request.user.role == request.user.Role.TECHNICIAN:
+                technician = get_object_or_404(
+                    Technician,
+                    user=request.user,
+                )
+                record.technician = technician
+
+            record.save()
+            return redirect('maintenance_list')
+    else:
+        form = MaintenanceRecordForm()
+
+    return render(
+        request,
+        'vehicles/maintenance_form.html',
+        {
+            'form': form,
+            'page_title': 'Add Maintenance Record',
+            'submit_text': 'Add Record',
+        }
+    )
+
+
+@login_required
+def edit_maintenance(request, record_id):
+    record = get_object_or_404(
+        MaintenanceRecord,
+        id=record_id,
+    )
+
+    user = request.user
+
+    if user.role == user.Role.TECHNICIAN:
+        if not record.technician or record.technician.user != user:
+            return redirect('maintenance_list')
+
+    elif user.role not in [
+        user.Role.ADMIN,
+        user.Role.MANAGER,
+    ]:
+        return redirect('maintenance_list')
+
+    if request.method == 'POST':
+        form = MaintenanceRecordForm(
+            request.POST,
+            instance=record,
+        )
+
+        if form.is_valid():
+            updated_record = form.save(commit=False)
+
+            if user.role == user.Role.TECHNICIAN:
+                updated_record.technician = record.technician
+
+            updated_record.save()
+            return redirect('maintenance_list')
+    else:
+        form = MaintenanceRecordForm(instance=record)
+
+    return render(
+        request,
+        'vehicles/maintenance_form.html',
+        {
+            'form': form,
+            'page_title': 'Edit Maintenance Record',
+            'submit_text': 'Save Changes',
+            'record': record,
+        }
+    )
+
+
+@login_required
+def delete_maintenance(request, record_id):
+    record = get_object_or_404(
+        MaintenanceRecord,
+        id=record_id,
+    )
+
+    user = request.user
+
+    if user.role == user.Role.TECHNICIAN:
+        if not record.technician or record.technician.user != user:
+            return redirect('maintenance_list')
+
+    elif user.role not in [
+        user.Role.ADMIN,
+        user.Role.MANAGER,
+    ]:
+        return redirect('maintenance_list')
+
+    if request.method == 'POST':
+        record.delete()
+
+    return redirect('maintenance_list')
 
 @login_required
 def appointment_list(request):
@@ -267,6 +417,100 @@ def cancel_appointment(request, appointment_id):
 
     return redirect('appointment_list')
 
+@login_required
+def edit_appointment(request, appointment_id):
+    appointment = get_object_or_404(
+        Appointment,
+        id=appointment_id,
+    )
+
+    user = request.user
+
+    if user.role == user.Role.CUSTOMER:
+        if appointment.vehicle.owner != user:
+            return redirect('appointment_list')
+
+    elif user.role == user.Role.TECHNICIAN:
+        if (
+            not appointment.technician
+            or appointment.technician.user != user
+        ):
+            return redirect('appointment_list')
+
+    elif user.role not in [
+        user.Role.ADMIN,
+        user.Role.MANAGER,
+    ]:
+        return redirect('appointment_list')
+
+    if request.method == 'POST':
+        form = AppointmentForm(
+            request.POST,
+            instance=appointment,
+        )
+
+        if form.is_valid():
+            updated_appointment = form.save(commit=False)
+
+            if user.role == user.Role.CUSTOMER:
+                updated_appointment.vehicle = appointment.vehicle
+                updated_appointment.technician = appointment.technician
+                updated_appointment.status = appointment.status
+
+            elif user.role == user.Role.TECHNICIAN:
+                updated_appointment.technician = appointment.technician
+
+            updated_appointment.save()
+
+            return redirect('appointment_list')
+
+    else:
+        form = AppointmentForm(
+            instance=appointment
+        )
+
+    return render(
+        request,
+        'vehicles/appointment_form.html',
+        {
+            'form': form,
+            'page_title': 'Edit Appointment',
+            'submit_text': 'Save Changes',
+            'appointment': appointment,
+        }
+    )
+
+
+@login_required
+def delete_appointment(request, appointment_id):
+    appointment = get_object_or_404(
+        Appointment,
+        id=appointment_id,
+    )
+
+    user = request.user
+
+    if user.role == user.Role.CUSTOMER:
+        if appointment.vehicle.owner != user:
+            return redirect('appointment_list')
+
+    elif user.role == user.Role.TECHNICIAN:
+        if (
+            not appointment.technician
+            or appointment.technician.user != user
+        ):
+            return redirect('appointment_list')
+
+    elif user.role not in [
+        user.Role.ADMIN,
+        user.Role.MANAGER,
+    ]:
+        return redirect('appointment_list')
+
+    if request.method == 'POST':
+        appointment.delete()
+
+    return redirect('appointment_list')
 
 @login_required
 def due_services(request):
