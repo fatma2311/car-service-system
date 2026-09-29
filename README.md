@@ -1,71 +1,94 @@
-# 🚗 Smart Car Service & Maintenance System
+# 🚗 SmartCarService
 
-A full-stack web application for managing vehicle maintenance operations — built as a graduation project for the **Full-Stack Python Program 2026**.
+A full-stack web application for managing vehicle maintenance and service appointments, developed as a graduation project for the Full-Stack Python Program 2026.
 
-## 📋 Overview
+SmartCarService combines a Django web application, PostgreSQL database, role-based access control, and an Agentic AI assistant that can interact with real application services through controlled backend tools.
 
-The system helps car service centers manage vehicles, maintenance records, technicians, and appointments — with an **AI-powered agent** that analyzes a vehicle's maintenance history and proactively suggests or schedules upcoming service based on technician and spare-part availability.
+---
+
+## 📌 Project Overview
+
+SmartCarService provides a centralized platform for managing vehicles, maintenance records, technicians, and service appointments.
+
+The system supports multiple user roles and applies role-based permissions to protect application data and operations.
+
+The project also includes an integrated Agentic AI Assistant. Instead of functioning only as a conversational chatbot, the AI can understand a user's request, select an appropriate backend tool, execute authorized operations, and return the result to the user.
+
+---
 
 ## ✨ Key Features
 
-- **Role-Based Access Control (RBAC)** — Admin, Manager, Technician, and Customer roles with distinct permissions
-- **Vehicle & Maintenance Tracking** — full service history per vehicle
-- **Smart Appointment Scheduling** — availability-aware booking for technicians and parts
-- **AI Agent Assistant** — uses tool-calling to query maintenance data, predict upcoming service needs, and assist with scheduling decisions
-- **Analytics Dashboard** — service trends, technician workload, and delay rates
+### 🔐 Authentication & RBAC
+- User registration and login
+- Logout functionality
+- Role-Based Access Control (RBAC)
+- Customer, Technician, Manager, and Admin roles
+- Ownership and assignment-based authorization
 
-## 🛠️ Tech Stack
+### 🚗 Vehicle Management
+- Add vehicles
+- View vehicles
+- Edit vehicle information
+- Delete vehicles
+- Associate vehicles with their owners
 
-| Layer | Technology |
-|---|---|
-| Backend | Django (Python) |
-| Database | PostgreSQL |
-| Frontend | HTML, CSS, JavaScript (ES6) |
-| AI | LLM API with function/tool calling |
+### 🔧 Maintenance Management
+- Create maintenance records
+- View maintenance history
+- Edit maintenance records
+- Delete maintenance records
+- Maintenance status tracking
+- Service date and next service date
+- Maintenance cost tracking
 
-## 👥 Team
+### 📅 Appointment Management
+- View appointments
+- Edit authorized appointments
+- Cancel appointments
+- Delete authorized appointments
+- Appointment status management
+- Technician assignment
 
-| Name | Role |
-|---|---|
-| Fatma | Team Lead — Data Models, RBAC, AI Agent |
-| Habiba | Frontend, Views, CRUD |
+### 🤖 Agentic AI Assistant
+The integrated AI Assistant can:
 
-## 🚀 Getting Started
+- Retrieve the authenticated user's vehicles
+- Retrieve maintenance history
+- Identify due maintenance services
+- Retrieve available technicians
+- Retrieve available service slots
+- Book service appointments
+- Cancel appointments after explicit confirmation
 
-```bash
-# Clone the repository
-git clone https://github.com/<your-username>/car-service-system.git
-cd car-service-system
+The AI uses backend tools instead of directly accessing the database.
 
-# Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate      # macOS/Linux
-venv\Scripts\activate         # Windows
+### 🛡️ AI Security
+- AI requests use the authenticated user's context
+- Backend tools perform authorization checks
+- User ownership is validated
+- Technician assignments are validated
+- Tool parameters are validated
+- Destructive actions require explicit confirmation
 
-# Install dependencies
-pip install -r requirements.txt
+---
 
-# Apply migrations
-python manage.py migrate
+## 🧠 Agentic AI Workflow
 
-# Run the development server
-python manage.py runserver
-```
+The AI follows a controlled workflow:
 
-## 📁 Project Structure
-
-```
-car-service-system/
-├── config/            # Project settings
-├── accounts/          # Authentication & RBAC
-├── vehicles/          # Vehicle & maintenance models
-├── appointments/      # Scheduling logic
-├── ai_agent/          # AI agent & tool-calling integration
-├── static/
-├── templates/
-└── requirements.txt
-```
-
-## 📄 License
-
-This project is developed for academic purposes as part of the Full-Stack Python Program 2026 graduation requirements.
+```text
+User Request
+     ↓
+Understand User Goal
+     ↓
+Select Appropriate Tool
+     ↓
+Validate User Permissions
+     ↓
+Execute Backend Tool
+     ↓
+Interact with Database / Services
+     ↓
+Observe Result
+     ↓
+Return Final Response
