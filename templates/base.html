@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Car Service System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #0d9488;
+            --bg-light: #f8fafc;
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-light);
+            color: #334155;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar-custom {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .card {
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+        .stat-card-1 { background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%); }
+        .stat-card-2 { background: linear-gradient(135deg, #0284c7 0%, #d97706 100%); }
+        .stat-card-3 { background: linear-gradient(135deg, #d97706 0%, #0f172a 100%); }
+        .btn-primary-custom {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 20px;
+            font-weight: 600;
+        }
+        .btn-primary-custom:hover {
+            background-color: #0f766e;
+            color: white;
+        }
+        .main-wrapper {
+            flex: 1;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            background-color: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom py-3 mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-4" href="{% url 'dashboard' %}">Smart Car Service System</a>
+        <div class="navbar-nav ms-auto d-flex flex-row gap-3">
+            <a class="nav-link text-white-50 fw-semibold" href="{% url 'dashboard' %}">Home</a>
+            <a class="nav-link text-white-50 fw-semibold" href="{% url 'add_vehicle' %}">Add Vehicle</a>
+            <a class="nav-link text-white-50 fw-semibold" href="{% url 'book_appointment' %}">Book Appointment</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container main-wrapper pb-5">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+</div>
+
+<footer>
+    <div class="container">
+        Smart Car Service System &copy; 2026 | All rights reserved
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

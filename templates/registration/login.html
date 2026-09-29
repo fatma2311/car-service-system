@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card p-4 shadow-sm border-0">
+            <h3 class="fw-bold text-center mb-4 text-dark">Login</h3>
+
+            {% if form.errors %}
+                <div class="alert alert-danger rounded-3 mb-3">
+                    Invalid username or password, please try again.
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Username</label>
+                    <input type="text" name="username" class="form-control py-2" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Password</label>
+                    <input type="password" name="password" class="form-control py-2" required>
+                </div>
+                <button type="submit" class="btn btn-primary-custom w-100 py-2 fs-6">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card p-4 text-center border-start border-4 border-success shadow-sm">
+                <span class="text-muted small">Total Vehicles</span>
+                <h2 class="fw-bold text-dark mt-2">{{ total_vehicles }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 text-center border-start border-4 border-info shadow-sm">
+                <span class="text-muted small">Total Appointments</span>
+                <h2 class="fw-bold text-dark mt-2">{{ total_appointments }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 text-center border-start border-4 border-warning shadow-sm">
+                <span class="text-muted small">Pending Appointments</span>
+                <h2 class="fw-bold text-dark mt-2">{{ pending_appointments }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-3 mb-5 shadow-sm">
+        <form method="get" action="{% url 'dashboard' %}" class="row g-2">
+            <div class="col-md-10">
+                <input type="text" name="q" value="{{ query|default:'' }}" class="form-control py-2" placeholder="Search by plate number, make, or model...">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary-custom w-100 py-2">Smart Search 🔍</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold m-0">🚗 My Fleet</h4>
+                <a href="{% url 'add_vehicle' %}" class="btn btn-sm btn-primary-custom px-3">+ Add Vehicle</a>
+            </div>
+            
+            {% if vehicles %}
+                {% for vehicle in vehicles %}
+                    <div class="card p-4 mb-3 shadow-sm">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="fw-bold text-success mb-1">{{ vehicle.make }} {{ vehicle.model }}</h5>
+                                <p class="text-muted small mb-2">Year: {{ vehicle.year }} | Plate: <span class="badge bg-secondary">{{ vehicle.license_plate }}</span></p>
+                                <p class="text-info small mb-0">Mileage: <strong>{{ vehicle.mileage }}</strong> km</p>
+                            </div>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                        <div class="mt-3 p-2 rounded-3 bg-light border border-success border-opacity-25 text-success small">
+                            💡 <strong>Smart Recommendation:</strong> {{ vehicle.get_service_recommendation }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="card p-4 text-center text-muted">No matching vehicles or none registered yet.</div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-6">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold m-0">📅 Appointments Schedule</h4>
+                <a href="{% url 'book_appointment' %}" class="btn btn-sm btn-primary-custom px-3">+ Book Appointment</a>
+            </div>
+
+            {% if appointments %}
+                <div class="card p-3 shadow-sm">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr class="text-muted small">
+                                    <th>Vehicle</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment in appointments %}
+                                    <tr>
+                                        <td class="fw-semibold">{{ appointment.vehicle.make }} {{ appointment.vehicle.model }}</td>
+                                        <td class="small text-muted">{{ appointment.appointment_date|date:"Y-m-d | h:i A" }}</td>
+                                        <td>
+                                            {% if appointment.status == 'pending' %}
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                            {% elif appointment.status == 'confirmed' %}
+                                                <span class="badge bg-primary">Confirmed</span>
+                                            {% elif appointment.status == 'completed' %}
+                                                <span class="badge bg-success">Completed</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Cancelled</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if appointment.status == 'pending' %}
+                                                <a href="{% url 'cancel_appointment' appointment.id %}" class="btn btn-outline-danger btn-sm py-0 px-2">Cancel</a>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card p-4 text-center text-muted">No maintenance appointments registered currently.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
